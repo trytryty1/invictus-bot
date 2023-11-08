@@ -1,0 +1,17 @@
+appId: com.invictus.invictusbot
+productName: Invictus Auto Messenger
+copyright: Copyright © 2023 David Wing
+directories:
+  output: dist
+  buildResources: resources
+asarUnpack:
+  - 'node_modules/selenium-webdriver'
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+extraFiles:
+  - from: '/main/data.json'  # Replace 'path/to/your/data.json' with the actual path to your data.json file
+    to: '.'
+publish: null
