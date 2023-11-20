@@ -2,11 +2,11 @@ import path from "path";
 import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
-import bot from "../bot-messenger";
 //////////////////////////////////////////
 const { Builder, By, Key, until } = require("selenium-webdriver");
 //const chrome = require("selenium-webdriver/chrome");
 import chrome from "selenium-webdriver/chrome";
+import fs from "fs";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -34,6 +34,37 @@ if (isProd) {
     await mainWindow.loadURL(`http://localhost:${port}/`);
     mainWindow.webContents.openDevTools();
   }
+
+  let formsFilePath = "forms.json";
+  let formsData = {};
+  try {
+    const file = fs.readFileSync(formsFilePath, "utf8")
+    if (file) {
+    formsData = JSON.parse(file);
+    } else {
+      console.log("No forms data")
+    }
+  } catch (err) {
+    // Handle file read errors or empty file
+    console.error("Error reading file:", err);
+  }
+
+  // Used to save the input from the users
+  ipcMain.on("request-forms", (event) => {
+    event.sender.send("response-data", formsData);
+  });
+
+  ipcMain.on("update-forms", async (event, arg) => {
+    formsData = { ...formsData, ...arg}
+
+    try {
+      fs.writeFileSync(formsFilePath, JSON.stringify(formsData));
+      event.returnValue = 'Data updated successfully';
+    } catch (err) {
+      console.error('Error writing file:', err);
+      event.returnValue = 'Error updating data';
+    }
+  });
 })();
 
 app.on("window-all-closed", () => {
@@ -82,7 +113,11 @@ export default async function runbot(username, password, group, message) {
     // Connectez-vous à Facebook
     // await driver.get('https://www.facebook.com/login');
     // await driver.findElement(By.id('email')).sendKeys(process.env.FACEBOOK_USER);
+    try {
     await driver.get(group);
+    } catch (error) {
+      return "Invalid link";
+    }
     await driver.sleep(1000);
     await driver.findElement(By.id("email")).sendKeys(username); //process.env.FACEBOOK_USER);
     await driver.sleep(1000);
@@ -123,22 +158,8 @@ export default async function runbot(username, password, group, message) {
         let text = await elements[i].getText();
 
         // Chargez les noms à partir du fichier JSON
-        const fs = require("fs");
-        let dataJson;
-        try {
-          const data = fs.readFileSync("data.json", "utf8");
-          dataJson = JSON.parse(data);
-        } catch (e) {
-          // If reading the file fails or it doesn't exist, create a default data structure
-          dataJson = [];
-          fs.writeFileSync(
-            "data.json",
-            JSON.stringify(dataJson, null, 2),
-            "utf8"
-          );
-        }
-
-        // Now you have 'dataJson' which will contain the JSON content or a default empty array if file read failed
+        let data = fs.readFileSync("data.json", "utf8");
+        let dataJson = data ? JSON.parse(data) : [];
 
         //convertir un float en int:
 

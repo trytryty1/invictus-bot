@@ -13,5 +13,5 @@ files:
       - app
 extraFiles:
   - from: '/main/data.json'  # Replace 'path/to/your/data.json' with the actual path to your data.json file
-    to: '.'
+    to: .
 publish: null

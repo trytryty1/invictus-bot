@@ -14,21 +14,26 @@
     "asar": false,
     "extraFiles": [
       {
-        "from": "main/data.json", 
+        "from": "main/data.json",
         "to": "."
       }
     ]
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@tailwindcss/forms": "^0.5.7",
     "dotenv": "^16.3.1",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
     "eslint-config-next": "^14.0.1",
+    "firebase": "^10.6.0",
+    "firebase-admin": "^11.11.0",
     "heroicons": "^2.0.18",
-    "selenium-webdriver": "^4.15.0"
+    "selenium-webdriver": "^4.15.0",
+    "react-firebase-hooks": "^5.1.1"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "autoprefixer": "^10.4.16",
     "electron": "^27.0.3",
     "electron-builder": "^24.6.4",
@@ -37,6 +42,7 @@
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "react-firebase-hooks": "^5.1.1"
   }
 }
